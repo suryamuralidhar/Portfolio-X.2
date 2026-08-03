@@ -5,7 +5,7 @@
     '<header class="nav">',
     '<div class="logo"><span class="dot"></span><div>',
     '<h1><a href="index.html">Suryamuralidhar Loganathan</a></h1>',
-    '<p><a href="index.html">Interior Designer | 3D Visualizer</a></p>',
+    '<p><a href="index.html">Architect | Interior Designer | 3D Visualizer</a></p>',
     '</div></div>',
     '<button class="nav-toggle" type="button" aria-controls="site-navigation" aria-expanded="false" aria-label="Open navigation"><span></span><span></span><span></span></button>',
     '<nav id="site-navigation" aria-label="Primary navigation">',
