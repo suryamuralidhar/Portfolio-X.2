@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>360 Viewer</title>
+
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
+
+<script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+<script src="../js/config.js"></script>
+
+<style>
+
+/* ===== BASIC PAGE ===== */
+
+html,body{
+margin:0;
+height:100%;
+overflow:hidden;
+font-family:Segoe UI, sans-serif;
+}
+
+#panorama{
+width:100%;
+height:100vh;
+}
+
+
+/* ===== BOTTOM SPACE BAR ===== */
+
+.space-bar{
+position:fixed;
+bottom:0;
+left:0;
+
+width:100%;
+
+padding:16px;
+
+text-align:center;
+
+font-size:18px;
+
+background:rgba(0,0,0,0.5);
+color:white;
+
+backdrop-filter:blur(8px);
+}
+
+
+/* ===== FLOATING BUTTONS ===== */
+
+.ui-buttons{
+position:fixed;
+
+right:20px;
+bottom:100px;
+
+display:flex;
+flex-direction:column;
+
+gap:15px;
+
+z-index:10;
+}
+
+.ui-buttons button{
+
+width:55px;
+height:55px;
+
+border-radius:50%;
+border:none;
+
+font-size:22px;
+
+color:white;
+
+background:rgba(0,0,0,0.5);
+
+cursor:pointer;
+
+}
+
+
+/* ===== MOBILE POPUP ===== */
+
+#mobilePopup{
+
+position:fixed;
+top:0;
+left:0;
+
+width:100%;
+height:100%;
+
+background:rgba(0,0,0,0.55);
+
+display:none;
+
+align-items:center;
+justify-content:center;
+
+z-index:9999;
+
+}
+
+
+
+.ui-buttons button{
+
+width:55px;
+height:55px;
+
+border-radius:50%;
+border:none;
+
+font-size:22px;
+
+color:white;
+
+background:rgba(0,0,0,0.5);
+
+cursor:pointer;
+
+backdrop-filter: blur(6px);
+
+transition:0.25s;
+
+}
+
+.ui-buttons button:hover{
+
+background:rgba(0,0,0,0.75);
+transform:scale(1.08);
+
+}
+
+
+.popupBox{
+
+background:white;
+
+padding:30px;
+
+border-radius:16px;
+
+max-width:320px;
+
+text-align:center;
+
+box-shadow:0 20px 60px rgba(0,0,0,0.35);
+
+}
+
+.popupBox button{
+
+margin-top:20px;
+
+padding:10px 24px;
+
+border:none;
+
+background:#2e6f45;
+
+color:white;
+
+border-radius:8px;
+
+cursor:pointer;
+
+}
+
+</style>
+
+
+<style id="viewer-ui-polish">
+:root { --viewer-panel: rgba(19, 32, 25, .68); --viewer-line: rgba(255,255,255,.22); --viewer-accent: #d6ab70; }
+html, body { background: #101813; font-family: "Segoe UI", Arial, sans-serif; }
+#panorama { width: 100%; height: 100svh; }
+#musicDebug { display: none; }
+.space-bar {
+  left: 50%; bottom: max(1rem, env(safe-area-inset-bottom)); width: min(39rem, calc(100% - 8.5rem));
+  padding: .8rem 1.15rem; border: 1px solid var(--viewer-line); border-radius: 999px;
+  background: var(--viewer-panel); box-shadow: 0 12px 30px rgba(0,0,0,.28);
+  color: #fff; font-size: clamp(.84rem, 2vw, 1rem); letter-spacing: .02em; line-height: 1.35;
+  transform: translateX(-50%); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+}
+.ui-buttons {
+  right: max(1rem, env(safe-area-inset-right)); bottom: max(1rem, env(safe-area-inset-bottom));
+  gap: .55rem; z-index: 20;
+}
+.ui-buttons button {
+  display: grid; place-items: center; width: 3.15rem; height: 3.15rem; margin: 0;
+  border: 1px solid var(--viewer-line); border-radius: 50%; background: var(--viewer-panel);
+  box-shadow: 0 9px 22px rgba(0,0,0,.26); color: #fff; font-size: 1.15rem;
+  transition: transform 180ms ease, background-color 180ms ease, border-color 180ms ease;
+}
+.ui-buttons button:hover, .ui-buttons button:focus-visible { border-color: var(--viewer-accent); background: rgba(42,67,50,.88); transform: translateY(-2px) scale(1); }
+#mobilePopup { padding: 1rem; background: rgba(9,16,12,.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.popupBox { width: min(100%, 23rem); max-width: none; padding: 1.55rem; border: 1px solid rgba(255,255,255,.5); border-radius: 1.25rem; background: rgba(255,253,250,.96); box-shadow: 0 22px 55px rgba(0,0,0,.35); color: #1c2c24; line-height: 1.6; }
+.popupBox button { min-height: 2.65rem; margin-top: 1.1rem; padding: .55rem 1.15rem; border-radius: 999px; background: #1c2c24; font: inherit; font-weight: 700; }
+@media (max-width: 600px) {
+  .space-bar { width: calc(100% - 6.85rem); left: 1rem; bottom: max(1rem, env(safe-area-inset-bottom)); border-radius: 1rem; transform: none; text-align: left; }
+  .ui-buttons { right: .85rem; bottom: max(.85rem, env(safe-area-inset-bottom)); gap: .45rem; }
+  .ui-buttons button { width: 2.8rem; height: 2.8rem; font-size: 1rem; }
+}
+</style>
+
+</head>
+
+
+<body>
+
+<div id="panorama"></div>
+<audio id="bgMusic"></audio>
+
+<div id="musicDebug">Music Debug: Initializing...</div>
+
+
+<div class="space-bar" id="spaceBar"></div>
+
+<div class="ui-buttons">
+<button onclick="toggleMusic()" id="musicBtn">🔊</button>
+<button onclick="arMode()">📱</button>
+<button onclick="vrMode()">🥽</button>
+<button onclick="openFullscreen()">⛶</button>
+
+</div>
+
+
+<!-- ===== MOBILE POPUP ===== -->
+
+<div id="mobilePopup">
+
+<div class="popupBox">
+
+<p id="popupText"></p>
+
+<button onclick="closePopup()" id="popupButton"></button>
+
+</div>
+
+</div>
+
+
+<script>
+
+/* Wait until everything is ready */
+
+window.addEventListener("load", function(){
+
+if(typeof CONFIG === "undefined"){
+console.error("CONFIG not loaded");
+return;
+}
+
+/* Apply config values */
+
+document.title = CONFIG.title;
+document.getElementById("spaceBar").innerText = CONFIG.heading;
+document.getElementById("popupText").innerHTML = CONFIG.popupText;
+document.getElementById("popupButton").innerText = CONFIG.popupButton;
+
+
+/* Start viewer */
+
+pannellum.viewer('panorama', {
+
+type: "equirectangular",
+panorama: CONFIG.panoramaImage,
+autoLoad: true,
+friction: CONFIG.dragFriction
+
+});
+
+
+/* Mobile popup */
+
+setTimeout(function(){
+
+if(window.innerWidth < CONFIG.mobileWidth){
+
+document.getElementById("mobilePopup").style.display="flex";
+
+}
+
+},CONFIG.popupDelay);
+
+});
+
+
+/* FULLSCREEN */
+
+function openFullscreen(){
+
+var elem = document.getElementById("panorama");
+
+if (elem.requestFullscreen) {
+elem.requestFullscreen();
+}
+
+}
+
+
+/* DUMMY BUTTONS */
+
+function arMode(){}
+function vrMode(){}
+
+
+/* CLOSE POPUP */
+
+function closePopup(){
+
+document.getElementById("mobilePopup").style.display="none";
+
+}
+
+</script>
+<script src="config.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>

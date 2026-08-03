@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Portfolio | Suryamuralidhar</title>
+
+<link rel="stylesheet" href="css/navbar.css">
+<link rel="stylesheet" href="css/footer.css">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/responsive.css">
+<link rel="stylesheet" href="css/portfolio.css">
+
+</head>
+
+
+<body>
+
+<div id="navbar"></div>
+
+
+<section class="portfolio">
+
+<h1>Portfolio</h1>
+
+<p class="portfolio-text">
+Explore a collection of my architectural and interior visualization work.
+</p>
+
+
+<div class="portfolio-buttons">
+
+<!-- VIEW FLIPBOOK -->
+
+<a href="https://heyzine.com/flip-book/89fc77e0d6.html"
+id="viewPortfolio"
+class="portfolio-btn">
+
+Open Flipbook
+
+</a>
+
+
+<!-- DOWNLOAD PORTFOLIO -->
+
+<a href="https://drive.google.com/file/d/1LDGJqe5SjaFJQiPzE0pv9QcRZqQ7g_qz/view?usp=sharing"
+id="downloadPortfolio"
+class="portfolio-btn">
+
+Download Portfolio
+
+</a>
+
+</div>
+
+
+</section>
+
+
+<!-- POPUP -->
+
+<div id="portfolioPopup">
+
+<div class="popup-box">
+
+<p id="popupText"></p>
+
+<button id="popupOk">OK 😃</button>
+
+</div>
+
+</div>
+
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function(){
+
+const popup = document.getElementById("portfolioPopup");
+const popupText = document.getElementById("popupText");
+const okBtn = document.getElementById("popupOk");
+
+const viewBtn = document.getElementById("viewPortfolio");
+const downloadBtn = document.getElementById("downloadPortfolio");
+
+let linkToOpen = "";
+
+/* detect desktop */
+
+const isDesktop = window.innerWidth >= 900;
+
+
+/* OPEN FLIPBOOK */
+
+viewBtn.addEventListener("click", function(e){
+
+if(!isDesktop){   // popup only on mobile
+
+e.preventDefault();
+
+popupText.innerText =
+"Disclaimer: This portfolio is presented as a Flipbook. For the best experience, please rotate your Device to landscape mode and view it in Fullscreen.";
+
+linkToOpen = this.href;
+
+popup.style.display = "flex";
+
+}
+
+});
+
+
+/* DOWNLOAD PORTFOLIO */
+
+downloadBtn.addEventListener("click", function(e){
+
+e.preventDefault();
+
+popupText.innerText =
+"This Portfolio is designed as a Flipbook experience. Opening it as a normal PDF will not give the intended Flipbook effect. If you download it, please use a Flipbook viewer such as Heyzine.";
+
+linkToOpen = this.href;
+
+popup.style.display = "flex";
+
+});
+
+
+/* OK BUTTON */
+
+okBtn.addEventListener("click", function(){
+
+popup.style.display = "none";
+
+window.open(linkToOpen, "_blank");
+
+});
+
+});
+
+</script>
+
+
+<div id="footer"></div>
+
+<script src="js/script.js"></script>
+
+</body>
+</html>
