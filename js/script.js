@@ -161,3 +161,63 @@
   initialiseAmbientMotion();
   document.documentElement.classList.add("js", "site-ready");
 })();
+
+
+/* Premium visual interactions: decorative only, no content or navigation changes. */
+(() => {
+  "use strict";
+
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  const root = document.documentElement;
+
+  function addAmbientStage() {
+    if (document.querySelector(".ambient-stage")) return;
+    const stage = document.createElement("div");
+    stage.className = "ambient-stage";
+    stage.setAttribute("aria-hidden", "true");
+    stage.innerHTML = '<span class="ambient-orb orb-one"></span><span class="ambient-orb orb-two"></span><span class="ambient-orb orb-three"></span>';
+    document.body.prepend(stage);
+  }
+
+  function addRipple(card, event) {
+    const box = card.getBoundingClientRect();
+    const ripple = document.createElement("span");
+    ripple.className = "press-ripple";
+    ripple.style.left = String(event.clientX - box.left) + "px";
+    ripple.style.top = String(event.clientY - box.top) + "px";
+    card.appendChild(ripple);
+    ripple.addEventListener("animationend", () => ripple.remove(), { once: true });
+  }
+
+  function bindPremiumPointerEffects() {
+    if (reducedMotion || !finePointer) return;
+
+    document.addEventListener("pointerdown", (event) => {
+      const target = event.target instanceof Element ? event.target.closest(".interactive-card") : null;
+      if (target) addRipple(target, event);
+    }, { passive: true });
+
+    const nav = document.querySelector(".nav");
+    if (nav) {
+      nav.addEventListener("pointermove", (event) => {
+        const box = nav.getBoundingClientRect();
+        nav.style.setProperty("--nav-light-x", String((event.clientX - box.left) / box.width * 100) + "%");
+        nav.style.setProperty("--nav-light-y", String((event.clientY - box.top) / box.height * 100) + "%");
+      }, { passive: true });
+    }
+
+    let animationFrame = 0;
+    window.addEventListener("pointermove", (event) => {
+      if (animationFrame) return;
+      animationFrame = window.requestAnimationFrame(() => {
+        root.style.setProperty("--premium-x", String(event.clientX / window.innerWidth * 100) + "%");
+        root.style.setProperty("--premium-y", String(event.clientY / window.innerHeight * 100) + "%");
+        animationFrame = 0;
+      });
+    }, { passive: true });
+  }
+
+  addAmbientStage();
+  bindPremiumPointerEffects();
+})();
